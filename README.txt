@@ -1,11 +1,13 @@
 1- Introduction 
 
-This project consists of some few utilities that i think might useful 
-for many IT projects that require some quick and dirty scripts for 
-frequent use. 
+This project consists of some few utilities that i think might be
+useful for many IT projects that require some quick and dirty 
+scripts for frequent use. 
 
 The utilities are organized in folders, for now, the actual utilities 
-are : xls : basic excel spreadsheet manipulation utilities based on 
+are : 
+
+	xls : basic excel spreadsheet manipulation utilities based on 
 apache POI project (http://poi.apache.org) 
 
 2- Licence 
