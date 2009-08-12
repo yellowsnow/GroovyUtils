@@ -28,9 +28,6 @@ import java.math.BigDecimal
 import java.util.Map
 import java.text.DateFormat
 
-@Grab(group='org.apache.poi', module='poi', version='3.5-beta6')
-@Grab(group='org.apache.poi', module='poi-ooxml', version='3.5-beta6')
-
 public class SimpleXlsBuilder extends BuilderSupport {
 	static {
 		def oldWrite = HSSFWorkbook.metaClass.getMetaMethod("write", [OutputStream] as Class[])

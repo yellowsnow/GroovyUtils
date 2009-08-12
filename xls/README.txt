@@ -1,17 +1,21 @@
 1- Introduction
 
-These are example of Groovy Utils for everyday use :
-	SimpleXlsBuilder.groovy : a groovy builder for xls spreadsheets based on POI project (http://poi.apache.org)
+SimpleXlsBuilder.groovy is a groovy builder for xls spreadsheets based on POI project (http://poi.apache.org)
 
 2- Usage
 
-2.1 Running the sample with Groovy / Grape environment
+2.1 System requirements
+
+Groovy 1.6.4+ (and Java of course!)
 
 
-	grooy POIDemo.groovy
+2.2 Running the sample with Groovy / Grape environment
 
 
-2.2 CLASSPATH for non Grape use
+	grooy Demo.groovy
+
+
+2.3 CLASSPATH for non Grape use
 
 Please run the following command to get classpath dependencies : (check Groovy Grape usage for more options here : http://groovy.codehaus.org/Grape)
 
