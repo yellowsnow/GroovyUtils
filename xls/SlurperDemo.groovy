@@ -24,7 +24,7 @@ class SlurperDemo {
 		def slurper = new SimpleXlsSlurper("workbook.xls")
 		println "C10: ${slurper.valueAt("C10")}"
 		println "C11: ${slurper.valueAt("C11")}"
-		println "My New Sheet!C11: ${slurper.sheet("My New Sheet").valueAt("D3")}"
-		println "My New Sheet!C12: ${slurper.valueAt("My New Sheet!D3")}"
+		println "My New Sheet!C3: ${slurper.sheet("My New Sheet").valueAt("C3")}"
+		println "My New Sheet!C4: ${slurper.valueAt("My New Sheet!C4")}"
 	}
 }

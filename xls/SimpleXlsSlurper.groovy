@@ -16,9 +16,6 @@ the License.
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.hssf.usermodel.HSSFSheet
 import org.apache.poi.hssf.usermodel.HSSFCell
-import org.apache.poi.hssf.usermodel.DVConstraint
-import org.apache.poi.hssf.usermodel.HSSFDataValidation
-import org.apache.poi.hssf.usermodel.HSSFDateUtil
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.apache.poi.hssf.util.CellReference
 
@@ -107,9 +104,9 @@ public class SimpleXlsSlurper implements Iterable {
 			}
 			cell = row?.getCell(cellNum)
 		}
-		return getCellValue(cell)
+		return getCellValue(cell,cellRef)
 	}
-	private getCellValue(cell){
+	private getCellValue(cell, cellRef){
 		if (cell) {
 			selection = null
 			def result
@@ -135,7 +132,7 @@ public class SimpleXlsSlurper implements Iterable {
 			}
 			return result
 		} else {
-			throw new IllegalArgumentException("Bad cell reference [${ref}]")
+			throw new IllegalArgumentException("Bad cell reference [${cellRef}]")
 		}
 	}
 }

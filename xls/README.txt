@@ -1,6 +1,6 @@
 1- Introduction
 
-SimpleXlsBuilder.groovy is a groovy builder for xls spreadsheets based on POI project (http://poi.apache.org)
+SimpleXlsBuilder.groovy and SimpleXlsSlurper are respectively a groovy builder and slurper (parser) for xls spreadsheets. Both of them are based on POI project (http://poi.apache.org)
 
 2- Usage
 
@@ -12,7 +12,9 @@ Groovy 1.6.4+ (and Java of course!)
 2.2 Running the sample with Groovy / Grape environment
 
 
-	grooy Demo.groovy
+	grooy BuilderDemo.groovy
+	
+	grooy SlurperDemo.groovy
 
 
 2.3 CLASSPATH for non Grape use
