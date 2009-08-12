@@ -1,3 +1,18 @@
+/*
+Copyright 2009 Yellow Snow 
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not 
+use this file except in compliance with the License. You may obtain a copy of 
+the License at 
+
+	http://www.apache.org/licenses/LICENSE-2.0 
+
+Unless required by applicable law or agreed to in writing, software 
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
+License for the specific language governing permissions and limitations under 
+the License. 
+*/
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.hssf.usermodel.HSSFSheet
 import org.apache.poi.hssf.usermodel.DVConstraint
@@ -28,7 +43,7 @@ public class SimpleXlsBuilder extends BuilderSupport {
 						columnIndexes << cell.columnIndex
 					}
 				}
-				columnIndexes.each{sheet.autoSizeColumn(it);println ">>>>>autoSized column ${it} of ${sheet.sheetName}"}
+				columnIndexes.each{sheet.autoSizeColumn(it);}
 			}
 			return oldWrite.invoke(delegate, out)
 		}
@@ -45,7 +60,7 @@ public class SimpleXlsBuilder extends BuilderSupport {
 	def currentRow
 	def currentCell
 	def sheetNum = 0
-	def rowNum = 0
+	def rowNum = -1
 	def cellNum = 0
 	def x = 0
 	def y = 0
@@ -65,7 +80,7 @@ public class SimpleXlsBuilder extends BuilderSupport {
 			currentSheet = workbook.numberOfSheets > sheetNum ? workbook.getSheetAt(sheetNum++) : null
 			if (!currentSheet) {
 				currentSheet = workbook.createSheet("Sheet ${sheetNum}")
-				println " new sheet ${currentSheet.sheetName}"
+				
 			}
 		}
 		return currentSheet
@@ -75,17 +90,17 @@ public class SimpleXlsBuilder extends BuilderSupport {
 		if (!currentSheet) {
 			currentSheet = workbook.createSheet(sheetName)
 			sheetNum = workbook.getSheetIndex(sheetName)
-			println " new sheet ${currentSheet.sheetName}"
+			
 		} else {
-			println " using existing sheet ${currentSheet.sheetName}"
+			
 		}
 		return currentSheet
 	}
 	private checkCurrentRow(){
 		checkCurrentSheet()
-		currentRow = currentSheet.getRow(rowNum++)
+		currentRow = currentSheet.getRow(rowNum)
 		if (!currentRow) {
-			currentRow = currentSheet.createRow(rowNum - 1)
+			currentRow = currentSheet.createRow(rowNum)
 		}
 		return currentRow
 	}
@@ -97,14 +112,14 @@ public class SimpleXlsBuilder extends BuilderSupport {
 				checkCurrentSheet(map.name)
 			}
 			checkCurrentSheet()
-			rowNum = 0
+			rowNum = -1
 			cellNum = 0
 			return currentSheet;
 		} else if (name.equals("row")) {
-			rowNum = map['y'] ?: rowNum
+			rowNum = map['y'] ?: rowNum+1
 			checkCurrentRow()
 			cellNum = 0
-			println " new row ${rowNum}"
+			
 			return currentRow;
 		} else if (name.equals("cell")) {
 			if (map.ref) {
@@ -123,7 +138,7 @@ public class SimpleXlsBuilder extends BuilderSupport {
 			def value = map['value'];
 			currentCell = currentRow.getCell(cellNum++)
 			if (!currentCell) {
-				currentCell = currentRow.createCell(cellNum++)
+				currentCell = currentRow.createCell(cellNum)
 			}
 			currentCell.setCellValue(value)
 			if (value) {
@@ -143,7 +158,7 @@ public class SimpleXlsBuilder extends BuilderSupport {
 				cellStyle.dataFormat = workbook.creationHelper.createDataFormat().getFormat(format)
 				currentCell.setCellStyle(cellStyle)
 			}
-			println " new cell ${value}@(${cellNum},${rowNum})"
+			
 			return currentCell;
 		}  else if (name.equals("workbook")) {
 			def inputStream
@@ -154,10 +169,10 @@ public class SimpleXlsBuilder extends BuilderSupport {
 			}
 			if (inputStream) {
 				workbook = WorkbookFactory.create(inputStream);
-				println "workbook created from template${map.templateInputStream ? ' ' + map.templateInputStream :''}"
+				
 			} else {
 				workbook = new HSSFWorkbook()
-				println "workbook created from scratch"
+				
 			}
 			return workbook;
 		} else throw new RuntimeException("Unrecognized node $name")
