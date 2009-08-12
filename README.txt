@@ -6,7 +6,9 @@ frequent use.
 
 The utilities are organized in folders, for now, the actual utilities 
 are : xls : basic excel spreadsheet manipulation utilities based on 
-apache POI project (http://poi.apache.org) 2- Licence 
+apache POI project (http://poi.apache.org) 
+
+2- Licence 
 
 Copyright 2009 Yellow Snow Licensed under the Apache License, Version 
 2.0 (the "License"); you may not use this file except in compliance with 
