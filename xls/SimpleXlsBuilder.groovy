@@ -113,10 +113,20 @@ public class SimpleXlsBuilder extends BuilderSupport {
 			cellNum = 0
 			return currentSheet;
 		} else if (name.equals("row")) {
-			rowNum = map['y'] ?: rowNum+1
-			checkCurrentRow()
+			def y = map.remove('y')
+			rowNum = y ?: rowNum+1
 			cellNum = 0
-			
+			if (!map.empty) {
+				map.each{k,v->
+					if (k instanceof String) {
+						createNode('cell', [ref:k,value:v])
+					} else if (k instanceof Integer) {
+						createNode('cell', [x:k,value:v])
+					}
+				}
+			} else {
+				checkCurrentRow()
+			}
 			return currentRow;
 		} else if (name.equals("cell")) {
 			if (map.ref) {
@@ -133,10 +143,11 @@ public class SimpleXlsBuilder extends BuilderSupport {
 			checkCurrentRow()
 			def constraint = map["constraint"];
 			def value = map['value'];
-			currentCell = currentRow.getCell(cellNum++)
+			currentCell = currentRow.getCell(cellNum)
 			if (!currentCell) {
 				currentCell = currentRow.createCell(cellNum)
 			}
+			cellNum = cellNum + 1
 			currentCell.setCellValue(value)
 			if (value) {
 				def format = map['format']

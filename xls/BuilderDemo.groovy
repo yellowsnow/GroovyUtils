@@ -23,6 +23,8 @@ class BuilderDemo {
 	static main(args) {
 		def workbook = new SimpleXlsBuilder().workbook(templateFileName:"template.xls"){
 			sheet(name:"Feuil1") {
+				row("A25":"TEST FREE 1","B25":new Date(),"C25":new Date())
+				row("A26":"TEST FREE 2","B26":new Date(),"C26":new Date())
 				row {
 					cell(value:"1")
 					cell(value:"2")
@@ -49,6 +51,16 @@ class BuilderDemo {
 					cell(value:"3")
 					cell(value:"4")
 				}
+				row("A25":"LAST TEST FREE 1","B25":new Date(),"C25":new Date())
+				row("A26":"LAST TEST FREE 2","B26":new Date(),"C26":new Date())
+				row {
+					cell(value:10)
+					cell(value:20)
+					cell(value:30)
+					cell(value:40)
+				}
+				row(0:"ZERO",1:"ONE",5:"FIVE",10:"TEN")
+				row(0:"2ZERO",1:"2ONE",5:"2FIVE",10:"2TEN")
 			}
 		}
 		def fileName = "workbook.xls"
