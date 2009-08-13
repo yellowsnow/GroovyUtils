@@ -21,46 +21,12 @@ the License.
 
 class BuilderDemo {
 	static main(args) {
-		def workbook = new SimpleXlsBuilder().workbook(templateFileName:"template.xls"){
+		def workbook = new SimpleXlsBuilder().workbook(templateFileName:"template.xls"/*OPTIONAL, can also use InputStream via the 'templateInputStream' argument*/){
 			sheet(name:"Feuil1") {
-				row("A25":"TEST FREE 1","B25":new Date(),"C25":new Date())
-				row("A26":"TEST FREE 2","B26":new Date(),"C26":new Date())
-				row {
-					cell(value:"1")
-					cell(value:"2")
-					cell(value:"3")
-					cell(value:"4")
-				}
-				cell(ref:"C10",value:"test 1 :")
-				cell(ref:"C11",value:"test 2 :")
-				cell(ref:"C12",value:"test 2 :")
-				row {
-					cell(value:"test 4")
-					cell(x:10, value:"test 5")
-				}
-				row(y:20) {
-					cell(value:"test 6")
-					cell(x:10, value:"test 7")
-				}
+				(1..3).each{row(0:"ZERO${it}",1:"ONE${it}",5:2556,6:-25888,7:898956,10:new Date())}
 			}
-			(3..6).each{cell(ref:"My New Sheet!C${it}",value:"NONE")}
-			sheet(name:"Last") {
-				row {
-					cell(value:"1")
-					cell(value:"2")
-					cell(value:"3")
-					cell(value:"4")
-				}
-				row("A25":"LAST TEST FREE 1","B25":new Date(),"C25":new Date())
-				row("A26":"LAST TEST FREE 2","B26":new Date(),"C26":new Date())
-				row {
-					cell(value:10)
-					cell(value:20)
-					cell(value:30)
-					cell(value:40)
-				}
-				row(0:"ZERO",1:"ONE",5:"FIVE",10:"TEN")
-				row(0:"2ZERO",1:"2ONE",5:"2FIVE",10:"2TEN")
+			sheet(name:"Feuil2") {
+				(1..3).each{row(0:"ZERO${it}",1:"ONE${it}",5:6,6:-25888,7:898956,10:new Date())}
 			}
 		}
 		def fileName = "workbook.xls"

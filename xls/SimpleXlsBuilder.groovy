@@ -147,7 +147,6 @@ public class SimpleXlsBuilder extends BuilderSupport {
 			if (!currentCell) {
 				currentCell = currentRow.createCell(cellNum)
 			}
-			cellNum = cellNum + 1
 			currentCell.setCellValue(value)
 			if (value) {
 				def format = map['format']
@@ -158,15 +157,18 @@ public class SimpleXlsBuilder extends BuilderSupport {
 						format = "(#,##0_);[Red](#,##0)"
 					} else if (value instanceof Number) {
 						format = "(#,##0.00_);[Red](#,##0.00)"
+						value = value.doubleValue()
 					} else {
 						format = "text"
 					}
 				}
-				def cellStyle = currentCell.getCellStyle()
+				def cellStyle = workbook.createCellStyle()
+				cellStyle.cloneStyleFrom(currentCell.getCellStyle())
 				cellStyle.dataFormat = workbook.creationHelper.createDataFormat().getFormat(format)
 				currentCell.setCellStyle(cellStyle)
+				//println "CELL#${format}:${value}@[${rowNum},${cellNum}]"
 			}
-			
+			cellNum = cellNum + 1
 			return currentCell;
 		}  else if (name.equals("workbook")) {
 			def inputStream

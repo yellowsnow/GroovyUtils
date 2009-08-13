@@ -15,10 +15,11 @@ the License.
 */
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.hssf.usermodel.HSSFSheet
+import org.apache.poi.hssf.usermodel.HSSFRow
 import org.apache.poi.hssf.usermodel.HSSFCell
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.apache.poi.hssf.util.CellReference
-
+import org.apache.poi.hssf.usermodel.HSSFDateUtil
 
 import java.io.IOException
 import java.io.OutputStream
@@ -53,15 +54,40 @@ public class SimpleXlsSlurper implements Iterable {
 	protected populate(){
 		sheets = new ArrayList<HSSFSheet>(workbook.numberOfSheets)
 		(0..(workbook.numberOfSheets-1)).each{sheets << workbook.getSheetAt(it)}
+		selection = workbook
 	} 
 	Iterator iterator(){
-		if (selection instanceof HSSFWorkbook) {
-			return sheets.collect{it.sheetName}.iterator()
-		} else if (selection instanceof HSSFSheet) {
-			return selection.iterator()
+		if (selection instanceof HSSFSheet) {
+			return selection.collect{row->rowIterator(row)}.iterator()
+		} else if (selection == workbook || selection == sheets) {
+			return sheets.collect{sheet->sheetIterator(sheet)}.iterator()
+		} else if (selection instanceof HSSFRow) {
+			return selection.collect{cell->getCellValue(cell)}.iterator()
 		}
 	}
-	def row(Integer index){
+	private sheetIterator(sheet){
+		def iterator = sheet.collect{row->rowIterator(row)}.iterator()
+		iterator.metaClass.toString={sheet.sheetName}
+		iterator.metaClass.getName={sheet.sheetName}
+		return iterator
+	}
+	private rowIterator(row){
+		def iterator = row.collect{cell->cellClass(cell)}.iterator()
+		iterator.metaClass.toString{String.valueOf(row.rowNum)}
+		iterator.metaClass.getNum{row.rowNum}
+		return iterator
+	}
+		
+	def cells(Integer index){
+		if (selection instanceof HSSFRow){
+			selection = getCell(selection.rowNum,index)
+		}
+		if (!selection) {
+			throw new IllegalArgumentException("Bad cell column index [${index}]")
+		}
+		return this
+	}
+	def rows(Integer index){
 		def sheet,row
 		if (selection instanceof HSSFSheet){
 			sheet = selection
@@ -73,23 +99,51 @@ public class SimpleXlsSlurper implements Iterable {
 		if (sheet) {
 			selection = sheet.getRow(index)
 		}
+		if (!selection) {
+			throw new IllegalArgumentException("Bad row index [${index}]")
+		}
 		return this
 	}
-	def sheet(Integer index){
+	def sheets(){
+		selection = sheets
+		return this
+	}
+	def sheets(Integer index){
+		if (!index in (0..(sheets.size()))){
+			throw new IllegalArgumentException("Bad sheet index [${index}]")
+		}
 		selection = sheets[index]
+		if (!selection){
+			throw new IllegalArgumentException("Bad sheet index [${index}]")
+		}
 		return this
 	}
-	def sheet(String name){
+	def sheets(String name){
 		selection = workbook.getSheet(name)
+		if (!selection) {
+			throw new IllegalArgumentException("Bad sheet name [${name}]")
+		}
 		return this
+	}
+	def getValue(){
+		if (selection instanceof HSSFCell){
+			return getCellValue(selection)
+		} else {
+			throw new IllegalArgumentException("No cell is selected")
+		}
 	}
 	def valueAt(String ref){
 		def cellRef = new CellReference(ref)
 		def rowNum = cellRef.row
 		def cellNum = cellRef.col
+		def sheetName = cellRef.sheetName
+		def cell = getCell(rowNum,cellNum,sheetName)
+		return getCellValue(cell,cellRef)
+	}
+	private getCell(rowNum,cellNum,sheetName=null){
 		def aSheet,row,cell
-		if (cellRef.sheetName) {
-			sheet(cellRef.getSheetName())
+		if (sheetName) {
+			sheets(sheetName)
 			aSheet = selection
 		} else if (selection instanceof HSSFSheet){
 			aSheet = selection
@@ -104,18 +158,18 @@ public class SimpleXlsSlurper implements Iterable {
 			}
 			cell = row?.getCell(cellNum)
 		}
-		return getCellValue(cell,cellRef)
+		return cell
 	}
-	private getCellValue(cell, cellRef){
+	private getCellValue(cell, cellRef=null){
+		selection = null
+		def result
 		if (cell) {
-			selection = null
-			def result
 			switch(cell.cellType) {
 				case HSSFCell.CELL_TYPE_STRING:
 					result = cell.richStringCellValue.string;
 					break;
 				case HSSFCell.CELL_TYPE_NUMERIC:
-					if (DateUtil.isCellDateFormatted(cell)) {
+					if (HSSFDateUtil.isCellDateFormatted(cell)) {
 					  result = cell.dateCellValue
 					} else {
 					  result = cell.numericCellValue
@@ -127,12 +181,9 @@ public class SimpleXlsSlurper implements Iterable {
 				case HSSFCell.CELL_TYPE_FORMULA:
 					result = cell.cellFormula
 					break;
-				default:
-					result = null
 			}
-			return result
-		} else {
-			throw new IllegalArgumentException("Bad cell reference [${cellRef}]")
 		}
+		selection = workbook
+		return result
 	}
 }
