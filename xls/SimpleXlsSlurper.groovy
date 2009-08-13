@@ -72,7 +72,7 @@ public class SimpleXlsSlurper implements Iterable {
 		return iterator
 	}
 	private rowIterator(row){
-		def iterator = row.collect{cell->cellClass(cell)}.iterator()
+		def iterator = row.collect{cell->getCellValue(cell)}.iterator()
 		iterator.metaClass.toString{String.valueOf(row.rowNum)}
 		iterator.metaClass.getNum{row.rowNum}
 		return iterator
@@ -85,7 +85,7 @@ public class SimpleXlsSlurper implements Iterable {
 		if (!selection) {
 			throw new IllegalArgumentException("Bad cell column index [${index}]")
 		}
-		return this
+		return getCellValue(selection)
 	}
 	def rows(Integer index){
 		def sheet,row

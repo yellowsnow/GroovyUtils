@@ -46,7 +46,7 @@ class SlurperTestCase extends GroovyTestCase {
 		assert slurper.sheets(0).rows(0).cells(10).'class' == Date
 	}
 	void testAddressesAreOk() {
-		assertEquals(slurperAt("Sheet 2!F1"),slurper.sheets("Sheet 2").rows(0).cells(5))
+		assertEquals(slurper.valueAt("Sheet 2!F1"),slurper.sheets("Sheet 2").rows(0).cells(5))
 		assertEquals(slurper.sheets("Sheet 2").rows(0).cells(5), 255615.453)
 	}
 	void testIterationOk() {
