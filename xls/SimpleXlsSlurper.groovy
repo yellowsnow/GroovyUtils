@@ -139,7 +139,7 @@ public class SimpleXlsSlurper implements Iterable {
 		def cellNum = cellRef.col
 		def sheetName = cellRef.sheetName
 		def cell = getCell(rowNum,cellNum,sheetName)
-		return getCellValue(cell,cellRef)
+		return getCellValue(cell)
 	}
 	private getCell(rowNum,cellNum,sheetName=null){
 		def aSheet,row,cell
@@ -161,7 +161,7 @@ public class SimpleXlsSlurper implements Iterable {
 		}
 		return cell
 	}
-	private getCellValue(cell, cellRef=null){
+	private getCellValue(cell){
 		selection = workbook
 		return getCellValueByType(cell,cell.cellType)
 	}
