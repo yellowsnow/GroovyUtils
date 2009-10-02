@@ -91,4 +91,8 @@ class SlurperTestCase extends GroovyTestCase {
 		shouldFail(IllegalArgumentException){slurper.sheets(0).rows(0).cells(-1)}
 		shouldFail(IllegalArgumentException){slurper.sheets(0).rows(0).cells(500)}
 	}
+	void testTypesArePreservedWithFormulas(){enableFormulas();testTypesArePreserved()}
+	void testAddressesAreOkWithFormulas(){enableFormulas();testAddressesAreOk()}
+	void testIterationOkWithFormulas(){enableFormulas();testIterationOk()}
+	private void enableFormulas(){slurper.showFormulas = true}
 }

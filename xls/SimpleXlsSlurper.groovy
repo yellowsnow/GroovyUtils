@@ -31,6 +31,7 @@ public class SimpleXlsSlurper implements Iterable {
 	static {
 	}
 
+	boolean showFormulas = false
 	private def workbook
 	private selection
 	private sheets
@@ -161,29 +162,30 @@ public class SimpleXlsSlurper implements Iterable {
 		return cell
 	}
 	private getCellValue(cell, cellRef=null){
-		selection = null
-		def result
-		if (cell) {
-			switch(cell.cellType) {
-				case HSSFCell.CELL_TYPE_STRING:
-					result = cell.richStringCellValue.string;
-					break;
-				case HSSFCell.CELL_TYPE_NUMERIC:
-					if (HSSFDateUtil.isCellDateFormatted(cell)) {
-					  result = cell.dateCellValue
-					} else {
-					  result = cell.numericCellValue
-					}
-					break;
-				case HSSFCell.CELL_TYPE_BOOLEAN:
-					result = cell.booleanCellValue
-					break;
-				case HSSFCell.CELL_TYPE_FORMULA:
-					result = cell.cellFormula
-					break;
-			}
-		}
 		selection = workbook
+		return getCellValueByType(cell,cell.cellType)
+	}
+
+	private getCellValueByType(cell, cellType) {
+		def result
+		switch(cellType) {
+			case HSSFCell.CELL_TYPE_STRING:
+				result = cell.richStringCellValue.string;
+				break;
+			case HSSFCell.CELL_TYPE_NUMERIC:
+				if (HSSFDateUtil.isCellDateFormatted(cell)) {
+				  result = cell.dateCellValue
+				} else {
+				  result = cell.numericCellValue
+				}
+				break;
+			case HSSFCell.CELL_TYPE_BOOLEAN:
+				result = cell.booleanCellValue
+				break;
+			case HSSFCell.CELL_TYPE_FORMULA:
+				result = showFormulas ? cell.cellFormula : getCellValueByType(cell, cell.cachedFormulaResultType)
+				break
+		}
 		return result
 	}
 }
