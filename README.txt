@@ -1,3 +1,5 @@
+[ ![Codeship Status for yellowsnow/GroovyUtils](https://www.codeship.io/projects/c2d6b150-e9bf-0131-dd1b-32c9a92cd74d/status)](https://www.codeship.io/projects/26243)
+
 1- Introduction 
 
 This project consists of some few utilities that i think might be
